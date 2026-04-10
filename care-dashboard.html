@@ -1,0 +1,793 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Care Management Dashboard</title>
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --card: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --line: #e5e7eb;
+      --accent: #2563eb;
+      --accent-soft: #dbeafe;
+      --danger: #dc2626;
+      --success: #059669;
+      --warning: #d97706;
+      --shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+      --radius: 18px;
+    }* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.wrap {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 28px;
+}
+
+.header p {
+  margin: 6px 0 0;
+  color: var(--muted);
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+button, .button-like, input, select, textarea {
+  font: inherit;
+}
+
+button {
+  border: 0;
+  background: var(--accent);
+  color: white;
+  padding: 10px 14px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+button.secondary {
+  background: white;
+  color: var(--text);
+  border: 1px solid var(--line);
+}
+
+button.danger {
+  background: var(--danger);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 16px;
+}
+
+.card {
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  border: 1px solid rgba(229, 231, 235, 0.8);
+  padding: 18px;
+}
+
+.span-12 { grid-column: span 12; }
+.span-8 { grid-column: span 8; }
+.span-6 { grid-column: span 6; }
+.span-4 { grid-column: span 4; }
+.span-3 { grid-column: span 3; }
+
+.stat-label {
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.stat-value {
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.subtext {
+  color: var(--muted);
+  font-size: 14px;
+  margin-top: 8px;
+}
+
+.section-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+
+.section-title h2 {
+  font-size: 20px;
+  margin: 0;
+}
+
+.forms {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 10px;
+}
+
+.field {
+  grid-column: span 3;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field.span-6 { grid-column: span 6; }
+.field.span-4 { grid-column: span 4; }
+.field.span-12 { grid-column: span 12; }
+
+label {
+  font-size: 13px;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+input, select, textarea {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 10px 12px;
+  background: white;
+  width: 100%;
+}
+
+textarea {
+  min-height: 84px;
+  resize: vertical;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  text-align: left;
+  padding: 12px 10px;
+  border-bottom: 1px solid var(--line);
+  vertical-align: top;
+  font-size: 14px;
+}
+
+th {
+  font-size: 13px;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.pill {
+  display: inline-block;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.pill.ok { background: #dcfce7; color: #166534; }
+.pill.warn { background: #fef3c7; color: #92400e; }
+.pill.bad { background: #fee2e2; color: #991b1b; }
+.pill.info { background: var(--accent-soft); color: #1d4ed8; }
+
+.mini-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.mini-item {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 12px;
+  background: #fff;
+}
+
+.mini-item strong {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.row-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.empty {
+  color: var(--muted);
+  font-style: italic;
+  padding: 10px 0;
+}
+
+.footer-note {
+  color: var(--muted);
+  font-size: 13px;
+  margin-top: 10px;
+}
+
+@media (max-width: 900px) {
+  .span-8, .span-6, .span-4, .span-3,
+  .field, .field.span-6, .field.span-4 {
+    grid-column: span 12;
+  }
+
+  .stat-value {
+    font-size: 24px;
+  }
+
+  table, thead, tbody, th, td, tr {
+    display: block;
+  }
+
+  thead { display: none; }
+
+  tr {
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    margin-bottom: 12px;
+    padding: 8px;
+    background: white;
+  }
+
+  td {
+    border: none;
+    padding: 8px 6px;
+  }
+
+  td::before {
+    content: attr(data-label);
+    display: block;
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+}
+
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="header">
+      <div>
+        <h1>Care Management Dashboard</h1>
+        <p>Appointments, budget, expenses, and notes in one place.</p>
+      </div>
+      <div class="actions">
+        <button class="secondary" id="loadSampleBtn">Load sample data</button>
+        <button class="secondary" id="exportBtn">Export backup</button>
+        <label class="button-like" style="display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:12px;border:1px solid var(--line);background:#fff;cursor:pointer;font-weight:600;">
+          Import backup
+          <input type="file" id="importFile" accept="application/json" style="display:none;">
+        </label>
+        <button class="danger" id="resetBtn">Reset all</button>
+      </div>
+    </div><div class="grid">
+  <div class="card span-3">
+    <div class="stat-label">Next appointment</div>
+    <div class="stat-value" id="nextAppointmentName">None</div>
+    <div class="subtext" id="nextAppointmentMeta">Add an appointment to begin.</div>
+  </div>
+
+  <div class="card span-3">
+    <div class="stat-label">Days until next appointment</div>
+    <div class="stat-value" id="nextAppointmentDays">—</div>
+    <div class="subtext">Automatic countdown based on date.</div>
+  </div>
+
+  <div class="card span-3">
+    <div class="stat-label">Current budget remaining</div>
+    <div class="stat-value" id="budgetRemaining">£0.00</div>
+    <div class="subtext" id="budgetSummary">No budget set yet.</div>
+  </div>
+
+  <div class="card span-3">
+    <div class="stat-label">Open follow-ups</div>
+    <div class="stat-value" id="openTasksCount">0</div>
+    <div class="subtext" id="overdueTasksText">No overdue tasks.</div>
+  </div>
+
+  <div class="card span-12">
+    <div class="section-title">
+      <h2>Add appointment</h2>
+    </div>
+    <form id="appointmentForm" class="forms">
+      <div class="field"><label for="apptType">Type</label><input id="apptType" required placeholder="GP, dentist, therapy"></div>
+      <div class="field"><label for="apptWith">With who</label><input id="apptWith" placeholder="Dr Patel"></div>
+      <div class="field"><label for="apptDate">Date</label><input id="apptDate" type="date" required></div>
+      <div class="field"><label for="apptTime">Time</label><input id="apptTime" type="time"></div>
+      <div class="field span-4"><label for="apptLocation">Location</label><input id="apptLocation" placeholder="Clinic, home visit, hospital"></div>
+      <div class="field span-4"><label for="apptTransport">Transport</label><input id="apptTransport" placeholder="Taxi, bus, family lift"></div>
+      <div class="field span-4"><label for="apptNote">Notes</label><input id="apptNote" placeholder="Bring paperwork, blood form"></div>
+      <div class="field span-12"><button type="submit">Save appointment</button></div>
+    </form>
+  </div>
+
+  <div class="card span-12">
+    <div class="section-title">
+      <h2>Appointments</h2>
+    </div>
+    <div style="overflow:auto;">
+      <table>
+        <thead>
+          <tr>
+            <th>Type</th>
+            <th>With who</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Location</th>
+            <th>Countdown</th>
+            <th>Notes</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="appointmentsTable"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card span-6">
+    <div class="section-title">
+      <h2>Budget tracker</h2>
+    </div>
+    <form id="budgetForm" class="forms">
+      <div class="field"><label for="budgetPeriod">Period</label><input id="budgetPeriod" placeholder="April 2026"></div>
+      <div class="field"><label for="budgetType">Funding type</label><input id="budgetType" placeholder="Personal budget"></div>
+      <div class="field"><label for="budgetStart">Starting budget (£)</label><input id="budgetStart" type="number" min="0" step="0.01" required></div>
+      <div class="field"><label for="budgetExtra">Extra funds (£)</label><input id="budgetExtra" type="number" min="0" step="0.01" value="0"></div>
+      <div class="field span-12"><label for="budgetNotes">Notes</label><textarea id="budgetNotes" placeholder="Quarter allocation, direct payment note, emergency top-up"></textarea></div>
+      <div class="field span-12"><button type="submit">Save budget</button></div>
+    </form>
+    <div class="footer-note">The most recent budget entry is used as the active budget.</div>
+  </div>
+
+  <div class="card span-6">
+    <div class="section-title">
+      <h2>Add expense</h2>
+    </div>
+    <form id="expenseForm" class="forms">
+      <div class="field"><label for="expDate">Date</label><input id="expDate" type="date" required></div>
+      <div class="field"><label for="expItem">Item</label><input id="expItem" required placeholder="Shoes, taxi, medication"></div>
+      <div class="field"><label for="expCategory">Category</label><input id="expCategory" placeholder="Clothing, travel, health"></div>
+      <div class="field"><label for="expAmount">Amount (£)</label><input id="expAmount" type="number" min="0" step="0.01" required></div>
+      <div class="field"><label for="expPaidBy">Paid by</label><input id="expPaidBy" placeholder="Mum, aunt, direct payment"></div>
+      <div class="field span-6"><label for="expDesc">Description</label><input id="expDesc" placeholder="Winter coat, appointment taxi, vitamins"></div>
+      <div class="field span-12"><button type="submit">Save expense</button></div>
+    </form>
+  </div>
+
+  <div class="card span-12">
+    <div class="section-title">
+      <h2>Expenses</h2>
+    </div>
+    <div style="overflow:auto;">
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Item</th>
+            <th>Category</th>
+            <th>Paid by</th>
+            <th>Amount</th>
+            <th>Description</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="expensesTable"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card span-12">
+    <div class="section-title">
+      <h2>Add note / follow-up</h2>
+    </div>
+    <form id="noteForm" class="forms">
+      <div class="field"><label for="noteDate">Date</label><input id="noteDate" type="date" required></div>
+      <div class="field"><label for="noteType">Type</label><input id="noteType" placeholder="Phone call, health update, reminder"></div>
+      <div class="field span-4"><label for="noteSummary">Summary</label><input id="noteSummary" required placeholder="Call GP for blood results"></div>
+      <div class="field"><label for="noteWho">Who</label><input id="noteWho" placeholder="Mum, social worker, clinic"></div>
+      <div class="field"><label for="noteDeadline">Deadline</label><input id="noteDeadline" type="date"></div>
+      <div class="field span-6"><label for="noteDetails">Details</label><input id="noteDetails" placeholder="Ask for update, check referral, confirm transport"></div>
+      <div class="field span-12"><button type="submit">Save note</button></div>
+    </form>
+  </div>
+
+  <div class="card span-6">
+    <div class="section-title">
+      <h2>Open notes / follow-ups</h2>
+    </div>
+    <div id="openNotesList" class="mini-list"></div>
+  </div>
+
+  <div class="card span-6">
+    <div class="section-title">
+      <h2>Completed notes</h2>
+    </div>
+    <div id="doneNotesList" class="mini-list"></div>
+  </div>
+</div>
+
+  </div>  <script>
+    const STORAGE_KEY = 'careDashboardData_v1';
+
+    const state = {
+      appointments: [],
+      budgets: [],
+      expenses: [],
+      notes: []
+    };
+
+    function uid() {
+      return Math.random().toString(36).slice(2, 10);
+    }
+
+    function todayISO() {
+      return new Date().toISOString().split('T')[0];
+    }
+
+    function pounds(n) {
+      return `£${Number(n || 0).toFixed(2)}`;
+    }
+
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function loadState() {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return;
+      try {
+        const parsed = JSON.parse(raw);
+        state.appointments = parsed.appointments || [];
+        state.budgets = parsed.budgets || [];
+        state.expenses = parsed.expenses || [];
+        state.notes = parsed.notes || [];
+      } catch (e) {
+        console.error('Could not load saved data', e);
+      }
+    }
+
+    function diffDays(dateStr) {
+      const today = new Date();
+      today.setHours(0,0,0,0);
+      const date = new Date(dateStr + 'T00:00:00');
+      const diff = Math.round((date - today) / (1000 * 60 * 60 * 24));
+      return diff;
+    }
+
+    function countdownLabel(dateStr) {
+      const days = diffDays(dateStr);
+      if (days < 0) return { text: `Passed ${Math.abs(days)} day(s) ago`, cls: 'bad', raw: days };
+      if (days === 0) return { text: 'Today', cls: 'warn', raw: days };
+      if (days <= 7) return { text: `${days} day(s) left`, cls: 'warn', raw: days };
+      return { text: `${days} day(s) left`, cls: 'ok', raw: days };
+    }
+
+    function getUpcomingAppointments() {
+      return [...state.appointments]
+        .sort((a, b) => new Date(a.date) - new Date(b.date));
+    }
+
+    function getActiveBudget() {
+      if (!state.budgets.length) return null;
+      return state.budgets[state.budgets.length - 1];
+    }
+
+    function totalSpent() {
+      return state.expenses.reduce((sum, item) => sum + Number(item.amount || 0), 0);
+    }
+
+    function remainingBudget() {
+      const budget = getActiveBudget();
+      if (!budget) return 0;
+      return Number(budget.startingBudget || 0) + Number(budget.extraFunds || 0) - totalSpent();
+    }
+
+    function overdueOpenTasks() {
+      const today = todayISO();
+      return state.notes.filter(n => !n.done && n.deadline && n.deadline < today).length;
+    }
+
+    function renderSummary() {
+      const upcoming = getUpcomingAppointments().filter(a => diffDays(a.date) >= 0);
+      const next = upcoming[0];
+
+      document.getElementById('nextAppointmentName').textContent = next ? next.type : 'None';
+      document.getElementById('nextAppointmentMeta').textContent = next
+        ? `${next.date}${next.time ? ` at ${next.time}` : ''}${next.location ? ` • ${next.location}` : ''}`
+        : 'Add an appointment to begin.';
+      document.getElementById('nextAppointmentDays').textContent = next ? diffDays(next.date) : '—';
+
+      const budget = getActiveBudget();
+      document.getElementById('budgetRemaining').textContent = pounds(remainingBudget());
+      document.getElementById('budgetSummary').textContent = budget
+        ? `${budget.period || 'Current period'} • spent ${pounds(totalSpent())} of ${pounds(Number(budget.startingBudget || 0) + Number(budget.extraFunds || 0))}`
+        : 'No budget set yet.';
+
+      const openCount = state.notes.filter(n => !n.done).length;
+      document.getElementById('openTasksCount').textContent = String(openCount);
+      const overdue = overdueOpenTasks();
+      document.getElementById('overdueTasksText').textContent = overdue ? `${overdue} overdue task(s)` : 'No overdue tasks.';
+    }
+
+    function renderAppointments() {
+      const tbody = document.getElementById('appointmentsTable');
+      const items = getUpcomingAppointments();
+      tbody.innerHTML = '';
+
+      if (!items.length) {
+        tbody.innerHTML = '<tr><td colspan="8" class="empty">No appointments yet.</td></tr>';
+        return;
+      }
+
+      items.forEach(item => {
+        const cd = countdownLabel(item.date);
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td data-label="Type">${escapeHtml(item.type)}</td>
+          <td data-label="With who">${escapeHtml(item.withWho || '')}</td>
+          <td data-label="Date">${escapeHtml(item.date)}</td>
+          <td data-label="Time">${escapeHtml(item.time || '')}</td>
+          <td data-label="Location">${escapeHtml(item.location || '')}</td>
+          <td data-label="Countdown"><span class="pill ${cd.cls}">${cd.text}</span></td>
+          <td data-label="Notes">${escapeHtml(item.notes || '')}</td>
+          <td data-label="Actions"><div class="row-actions"><button class="secondary" onclick="removeItem('appointments','${item.id}')">Delete</button></div></td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function renderExpenses() {
+      const tbody = document.getElementById('expensesTable');
+      tbody.innerHTML = '';
+      const items = [...state.expenses].sort((a,b) => new Date(b.date) - new Date(a.date));
+
+      if (!items.length) {
+        tbody.innerHTML = '<tr><td colspan="7" class="empty">No expenses yet.</td></tr>';
+        return;
+      }
+
+      items.forEach(item => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td data-label="Date">${escapeHtml(item.date)}</td>
+          <td data-label="Item">${escapeHtml(item.item)}</td>
+          <td data-label="Category">${escapeHtml(item.category || '')}</td>
+          <td data-label="Paid by">${escapeHtml(item.paidBy || '')}</td>
+          <td data-label="Amount">${pounds(item.amount)}</td>
+          <td data-label="Description">${escapeHtml(item.description || '')}</td>
+          <td data-label="Actions"><div class="row-actions"><button class="secondary" onclick="removeItem('expenses','${item.id}')">Delete</button></div></td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function noteCardHtml(note, done) {
+      const overdue = !done && note.deadline && note.deadline < todayISO();
+      const deadlinePill = note.deadline
+        ? `<span class="pill ${overdue ? 'bad' : 'info'}">${overdue ? 'Overdue' : 'Deadline'}: ${escapeHtml(note.deadline)}</span>`
+        : '';
+
+      return `
+        <div class="mini-item">
+          <strong>${escapeHtml(note.summary)}</strong>
+          <div class="subtext">${escapeHtml(note.type || 'General note')}${note.who ? ` • ${escapeHtml(note.who)}` : ''}</div>
+          <div style="margin:10px 0; display:flex; gap:8px; flex-wrap:wrap;">${deadlinePill}</div>
+          <div>${escapeHtml(note.details || '')}</div>
+          <div class="row-actions" style="margin-top:12px;">
+            ${done
+              ? `<button class="secondary" onclick="toggleNote('${note.id}')">Mark open</button>`
+              : `<button onclick="toggleNote('${note.id}')">Mark done</button>`}
+            <button class="secondary" onclick="removeItem('notes','${note.id}')">Delete</button>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderNotes() {
+      const openWrap = document.getElementById('openNotesList');
+      const doneWrap = document.getElementById('doneNotesList');
+      const open = [...state.notes].filter(n => !n.done).sort((a,b) => (a.deadline || '9999-12-31').localeCompare(b.deadline || '9999-12-31'));
+      const done = [...state.notes].filter(n => n.done).sort((a,b) => new Date(b.date) - new Date(a.date));
+
+      openWrap.innerHTML = open.length ? open.map(n => noteCardHtml(n, false)).join('') : '<div class="empty">No open notes.</div>';
+      doneWrap.innerHTML = done.length ? done.map(n => noteCardHtml(n, true)).join('') : '<div class="empty">No completed notes.</div>';
+    }
+
+    function renderAll() {
+      renderSummary();
+      renderAppointments();
+      renderExpenses();
+      renderNotes();
+      saveState();
+    }
+
+    function removeItem(type, id) {
+      state[type] = state[type].filter(item => item.id !== id);
+      renderAll();
+    }
+
+    function toggleNote(id) {
+      const note = state.notes.find(n => n.id === id);
+      if (!note) return;
+      note.done = !note.done;
+      renderAll();
+    }
+
+    function escapeHtml(str) {
+      return String(str || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    document.getElementById('appointmentForm').addEventListener('submit', e => {
+      e.preventDefault();
+      state.appointments.push({
+        id: uid(),
+        type: document.getElementById('apptType').value.trim(),
+        withWho: document.getElementById('apptWith').value.trim(),
+        date: document.getElementById('apptDate').value,
+        time: document.getElementById('apptTime').value,
+        location: document.getElementById('apptLocation').value.trim(),
+        transport: document.getElementById('apptTransport').value.trim(),
+        notes: document.getElementById('apptNote').value.trim()
+      });
+      e.target.reset();
+      renderAll();
+    });
+
+    document.getElementById('budgetForm').addEventListener('submit', e => {
+      e.preventDefault();
+      state.budgets.push({
+        id: uid(),
+        period: document.getElementById('budgetPeriod').value.trim(),
+        fundingType: document.getElementById('budgetType').value.trim(),
+        startingBudget: Number(document.getElementById('budgetStart').value || 0),
+        extraFunds: Number(document.getElementById('budgetExtra').value || 0),
+        notes: document.getElementById('budgetNotes').value.trim()
+      });
+      e.target.reset();
+      renderAll();
+    });
+
+    document.getElementById('expenseForm').addEventListener('submit', e => {
+      e.preventDefault();
+      state.expenses.push({
+        id: uid(),
+        date: document.getElementById('expDate').value,
+        item: document.getElementById('expItem').value.trim(),
+        category: document.getElementById('expCategory').value.trim(),
+        amount: Number(document.getElementById('expAmount').value || 0),
+        paidBy: document.getElementById('expPaidBy').value.trim(),
+        description: document.getElementById('expDesc').value.trim()
+      });
+      e.target.reset();
+      document.getElementById('expDate').value = todayISO();
+      renderAll();
+    });
+
+    document.getElementById('noteForm').addEventListener('submit', e => {
+      e.preventDefault();
+      state.notes.push({
+        id: uid(),
+        date: document.getElementById('noteDate').value,
+        type: document.getElementById('noteType').value.trim(),
+        summary: document.getElementById('noteSummary').value.trim(),
+        who: document.getElementById('noteWho').value.trim(),
+        deadline: document.getElementById('noteDeadline').value,
+        details: document.getElementById('noteDetails').value.trim(),
+        done: false
+      });
+      e.target.reset();
+      document.getElementById('noteDate').value = todayISO();
+      renderAll();
+    });
+
+    document.getElementById('loadSampleBtn').addEventListener('click', () => {
+      state.appointments = [
+        { id: uid(), type: 'GP appointment', withWho: 'Dr Patel', date: todayISO(), time: '10:30', location: 'Local clinic', transport: 'Taxi', notes: 'Bring medication list' },
+        { id: uid(), type: 'Podiatry', withWho: 'Foot clinic', date: futureDate(7), time: '14:00', location: 'Hospital outpatients', transport: 'Bus', notes: 'Comfortable shoes' }
+      ];
+      state.budgets = [
+        { id: uid(), period: 'April 2026', fundingType: 'Personal budget', startingBudget: 1200, extraFunds: 150, notes: 'Quarterly top-up included' }
+      ];
+      state.expenses = [
+        { id: uid(), date: todayISO(), item: 'Taxi to GP', category: 'Travel', amount: 18, paidBy: 'Mum', description: 'Return trip' },
+        { id: uid(), date: todayISO(), item: 'Winter coat', category: 'Clothing', amount: 52, paidBy: 'Personal budget', description: 'Warm waterproof coat' }
+      ];
+      state.notes = [
+        { id: uid(), date: todayISO(), type: 'Phone call', summary: 'Call pharmacy', who: 'Mum', deadline: futureDate(2), details: 'Check prescription collection date', done: false },
+        { id: uid(), date: todayISO(), type: 'Health update', summary: 'Blood pressure reviewed', who: 'Clinic', deadline: '', details: 'Keep monitoring weekly', done: true }
+      ];
+      renderAll();
+    });
+
+    document.getElementById('resetBtn').addEventListener('click', () => {
+      if (!confirm('Delete all saved data?')) return;
+      state.appointments = [];
+      state.budgets = [];
+      state.expenses = [];
+      state.notes = [];
+      renderAll();
+    });
+
+    document.getElementById('exportBtn').addEventListener('click', () => {
+      const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'care-dashboard-backup.json';
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    document.getElementById('importFile').addEventListener('change', event => {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = e => {
+        try {
+          const parsed = JSON.parse(e.target.result);
+          state.appointments = parsed.appointments || [];
+          state.budgets = parsed.budgets || [];
+          state.expenses = parsed.expenses || [];
+          state.notes = parsed.notes || [];
+          renderAll();
+        } catch {
+          alert('That file could not be imported.');
+        }
+      };
+      reader.readAsText(file);
+      event.target.value = '';
+    });
+
+    function futureDate(days) {
+      const d = new Date();
+      d.setDate(d.getDate() + days);
+      return d.toISOString().split('T')[0];
+    }
+
+    document.getElementById('expDate').value = todayISO();
+    document.getElementById('noteDate').value = todayISO();
+    loadState();
+    renderAll();
+
+    window.removeItem = removeItem;
+    window.toggleNote = toggleNote;
+  </script></body>
+</html>
